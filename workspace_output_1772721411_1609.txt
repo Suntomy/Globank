@@ -1,0 +1,16 @@
+total 124
+drwxr-xr-x  6 user user  4096 Mar  5 14:36 .
+drwxr-xr-x 20 root root  4096 Feb 20 01:32 ..
+drwxr-xr-x  4 user user  4096 Feb 13 00:53 .agent_hooks
+-rw-r--r--  1 root root  7426 Mar  5 14:36 DEMO_INSTRUCTIONS.md
+-rw-r--r--  1 root root  8442 Mar  5 14:35 README.md
+-rw-r--r--  1 root root 19088 Mar  5 14:23 admin-dashboard.html
+drwxr-xr-x  2 root root  4096 Mar  5 14:20 css
+-rw-r--r--  1 root root 11980 Mar  5 14:29 deposit.html
+-rw-r--r--  1 root root  3452 Mar  5 14:21 index.html
+drwxr-xr-x  2 root root  4096 Mar  5 14:33 js
+drwxr-xr-x  2 root root  4096 Mar  5 14:36 outputs
+-rw-r--r--  1 root root  1311 Mar  5 14:36 todo.md
+-rw-r--r--  1 root root 11281 Mar  5 14:26 trading-terminal.html
+-rw-r--r--  1 root root 12902 Mar  5 14:33 user-dashboard.html
+-rw-r--r--  1 root root 12185 Mar  5 14:31 withdrawal.html

@@ -1,0 +1,15 @@
+css/:
+total 20
+drwxr-xr-x 2 root root  4096 Mar  5 14:20 .
+drwxr-xr-x 6 user user  4096 Mar  5 14:36 ..
+-rw-r--r-- 1 root root 12001 Mar  5 14:20 styles.css
+
+js/:
+total 68
+drwxr-xr-x 2 root root  4096 Mar  5 14:33 .
+drwxr-xr-x 6 user user  4096 Mar  5 14:36 ..
+-rw-r--r-- 1 root root 18688 Mar  5 14:25 admin.js
+-rw-r--r-- 1 root root  4874 Mar  5 14:29 deposit.js
+-rw-r--r-- 1 root root 16639 Mar  5 14:27 trading.js
+-rw-r--r-- 1 root root  4008 Mar  5 14:33 user-dashboard.js
+-rw-r--r-- 1 root root  7736 Mar  5 14:32 withdrawal.js

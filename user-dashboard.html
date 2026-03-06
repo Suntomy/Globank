@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Global Pilgrim Bank</title>
+    <link rel="stylesheet" href="bank-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <i class="fas fa-university"></i>
+                    Global Pilgrim Bank
+                </a>
+                <ul class="nav-links">
+                    <li><a href="user-dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="transactions.html"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+                    <li><a href="cards.html"><i class="fas fa-credit-card"></i> Cards</a></li>
+                    <li><a href="wallet.html"><i class="fas fa-wallet"></i> Wallet</a></li>
+                    <li><a href="kyc.html"><i class="fas fa-id-card"></i> KYC</a></li>
+                    <li><a href="index.html" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div style="text-align: center; margin-bottom: 20px; padding: 20px; background: var(--gradient-1); border-radius: 12px;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--gradient-2); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 32px;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <p style="color: var(--primary-color); font-weight: 600;">Olawale Abdul-Ganiyu</p>
+                <p style="color: var(--text-secondary); font-size: 12px;">Premium Account</p>
+                <div class="security-badge" style="margin-top: 10px;">
+                    <i class="fas fa-shield-alt"></i> Verified
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li><a href="#overview" class="active"><i class="fas fa-chart-line"></i> Overview</a></li>
+                <li><a href="#accounts"><i class="fas fa-wallet"></i> Accounts</a></li>
+                <li><a href="#cards"><i class="fas fa-credit-card"></i> My Cards</a></li>
+                <li><a href="#payments"><i class="fas fa-paper-plane"></i> Send Money</a></li>
+                <li><a href="#crypto"><i class="fab fa-bitcoin"></i> Crypto</a></li>
+                <li><a href="#fx"><i class="fas fa-exchange-alt"></i> Exchange</a></li>
+                <li><a href="#transactions"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+
+            <!-- Quick Actions -->
+            <div style="margin-top: 20px;">
+                <h4 style="color: var(--text-secondary); font-size: 12px; margin-bottom: 10px;">Quick Actions</h4>
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="openModal('sendMoneyModal')">
+                    <i class="fas fa-paper-plane"></i> Send Money
+                </button>
+                <button class="btn btn-success" style="width: 100%; margin-bottom: 10px;" onclick="openModal('depositModal')">
+                    <i class="fas fa-plus"></i> Add Money
+                </button>
+                <button class="btn btn-warning" style="width: 100%;" onclick="openModal('withdrawModal')">
+                    <i class="fas fa-minus"></i> Withdraw
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview -->
+            <section id="overview" class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chart-line"></i> Account Overview</h2>
+                    <span style="color: var(--text-secondary);">Welcome back!</span>
+                </div>
+
+                <!-- Balance Cards -->
+                <div class="grid-3">
+                    <div class="wallet-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <p style="font-size: 12px; opacity: 0.8;">Total Balance</p>
+                                <p style="font-size: 32px; font-weight: bold; margin: 10px 0;">$50,000,000</p>
+                                <p style="font-size: 12px; opacity: 0.7;">Available: $49,500,000</p>
+                            </div>
+                            <i class="fas fa-wallet" style="font-size: 40px; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #1a1f71 0%, #eb001b 100%); border-radius: 15px; padding: 25px; color: white;">
+                        <p style="font-size: 12px; opacity: 0.8;">Savings Account</p>
+                        <p style="font-size: 28px; font-weight: bold; margin: 10px 0;">$12,500,000</p>
+                        <p style="font-size: 12px; opacity: 0.7;">+5.2% Interest Rate</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%); border-radius: 15px; padding: 25px; color: var(--secondary-color);">
+                        <p style="font-size: 12px; opacity: 0.8;">Investment Account</p>
+                        <p style="font-size: 28px; font-weight: bold; margin: 10px 0;">$8,750,000</p>
+                        <p style="font-size: 12px; opacity: 0.7;">+12.3% YTD Return</p>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="grid-4" style="margin-top: 20px;">
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fas fa-arrow-down"></i> Income This Month</div>
+                        <div class="stat-value" style="color: var(--success-color);">$125,000</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fas fa-arrow-up"></i> Expenses This Month</div>
+                        <div class="stat-value" style="color: var(--danger-color);">$45,230</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fas fa-exchange-alt"></i> Transactions</div>
+                        <div class="stat-value">234</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fas fa-credit-card"></i> Active Cards</div>
+                        <div class="stat-value">3</div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div style="margin-top: 20px;">
+                    <h4 style="margin-bottom: 15px; color: var(--text-secondary);">Spending Overview</h4>
+                    <div class="chart-container">
+                        <canvas id="spendingChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Cards -->
+            <section id="cards" class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-credit-card"></i> My Cards</h2>
+                    <button class="btn btn-primary" onclick="openModal('newCardModal')">
+                        <i class="fas fa-plus"></i> New Card
+                    </button>
+                </div>
+
+                <div class="grid-3">
+                    <!-- Visa Card -->
+                    <div style="background: linear-gradient(135deg, #1a1f71 0%, #2d3494 100%); border-radius: 15px; padding: 25px; color: white; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);"></div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; position: relative; z-index: 1;">
+                            <div>
+                                <i class="fas fa-credit-card" style="font-size: 24px; opacity: 0.7;"></i>
+                            </div>
+                            <i class="fab fa-cc-visa" style="font-size: 40px;"></i>
+                        </div>
+                        <p style="font-size: 20px; letter-spacing: 3px; margin: 30px 0; position: relative; z-index: 1;">4532 •••• •••• 1234</p>
+                        <div style="display: flex; justify-content: space-between; position: relative; z-index: 1;">
+                            <div>
+                                <p style="font-size: 10px; opacity: 0.7;">CARD HOLDER</p>
+                                <p style="font-weight: bold;">OLAWALE ABDUL-GANIYU</p>
+                            </div>
+                            <div>
+                                <p style="font-size: 10px; opacity: 0.7;">EXPIRES</p>
+                                <p style="font-weight: bold;">12/28</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <button class="btn btn-outline" style="border-color: white; color: white; font-size: 12px; padding: 8px 15px;">
+                                <i class="fas fa-snowflake"></i> Freeze
+                            </button>
+                            <button class="btn btn-outline" style="border-color: white; color: white; font-size: 12px; padding: 8px 15px;">
+                                <i class="fas fa-cog"></i> Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mastercard -->
+                    <div style="background: linear-gradient(135deg, #eb001b 0%, #ff5f00 100%); border-radius: 15px; padding: 25px; color: white; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);"></div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; position: relative; z-index: 1;">
+                            <div>
+                                <i class="fas fa-credit-card" style="font-size: 24px; opacity: 0.7;"></i>
+                            </div>
+                            <i class="fab fa-cc-mastercard" style="font-size: 40px;"></i>
+                        </div>
+                        <p style="font-size: 20px; letter-spacing: 3px; margin: 30px 0; position: relative; z-index: 1;">5412 •••• •••• 5678</p>
+                        <div style="display: flex; justify-content: space-between; position: relative; z-index: 1;">
+                            <div>
+                                <p style="font-size: 10px; opacity: 0.7;">CARD HOLDER</p>
+                                <p style="font-weight: bold;">OLAWALE ABDUL-GANIYU</p>
+                            </div>
+                            <div>
+                                <p style="font-size: 10px; opacity: 0.7;">EXPIRES</p>
+                                <p style="font-weight: bold;">06/27</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <button class="btn btn-outline" style="border-color: white; color: white; font-size: 12px; padding: 8px 15px;">
+                                <i class="fas fa-snowflake"></i> Freeze
+                            </button>
+                            <button class="btn btn-outline" style="border-color: white; color: white; font-size: 12px; padding: 8px 15px;">
+                                <i class="fas fa-cog"></i> Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Apple Card -->
+                    <div style="background: linear-gradient(135deg, #ffffff 0%, #f5f5f7 100%); border-radius: 15px; padding: 25px; color: #1d1d1f; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,0,0,0.05) 0%, transparent 70%);"></div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; position: relative; z-index: 1;">
+                            <div>
+                                <i class="fas fa-credit-card" style="font-size: 24px; opacity: 0.5;"></i>
+                            </div>
+                            <i class="fab fa-apple" style="font-size: 40px;"></i>
+                        </div>
+                        <p style="font-size: 20px; letter-spacing: 3px; margin: 30px 0; position: relative; z-index: 1;">8234 •••• •••• 9012</p>
+                        <div style="display: flex; justify-content: space-between; position: relative; z-index: 1;">
+                            <div>
+                                <p style="font-size: 10px; opacity: 0.5;">CARD HOLDER</p>
+                                <p style="font-weight: bold;">OLAWALE ABDUL-GANIYU</p>
+                            </div>
+                            <div>
+                                <p style="font-size: 10px; opacity: 0.5;">EXPIRES</p>
+                                <p style="font-weight: bold;">03/29</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <button class="btn btn-outline" style="border-color: #1d1d1f; color: #1d1d1f; font-size: 12px; padding: 8px 15px;">
+                                <i class="fas fa-snowflake"></i> Freeze
+                            </button>
+                            <button class="btn btn-outline" style="border-color: #1d1d1f; color: #1d1d1f; font-size: 12px; padding: 8px 15px;">
+                                <i class="fas fa-cog"></i> Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Transactions -->
+            <section id="transactions" class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-history"></i> Recent Transactions</h2>
+                    <a href="transactions.html" class="btn btn-outline">View All</a>
+                </div>
+
+                <div id="recentTransactions">
+                    <div class="transaction-item">
+                        <div style="display: flex; align-items: center;">
+                            <div class="transaction-icon" style="background: rgba(0, 255, 136, 0.2);">
+                                <i class="fas fa-arrow-down" style="color: var(--success-color);"></i>
+                            </div>
+                            <div>
+                                <p style="font-weight: 600;">Payment Received</p>
+                                <p style="color: var(--text-secondary); font-size: 12px;">From: John Smith</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <p class="transaction-amount transaction-positive">+$5,000.00</p>
+                            <p style="color: var(--text-secondary); font-size: 12px;">Today, 10:30 AM</p>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item">
+                        <div style="display: flex; align-items: center;">
+                            <div class="transaction-icon" style="background: rgba(255, 68, 68, 0.2);">
+                                <i class="fas fa-arrow-up" style="color: var(--danger-color);"></i>
+                            </div>
+                            <div>
+                                <p style="font-weight: 600;">Wire Transfer</p>
+                                <p style="color: var(--text-secondary); font-size: 12px;">To: Sarah Johnson</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <p class="transaction-amount transaction-negative">-$2,500.00</p>
+                            <p style="color: var(--text-secondary); font-size: 12px;">Today, 09:15 AM</p>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item">
+                        <div style="display: flex; align-items: center;">
+                            <div class="transaction-icon" style="background: rgba(0, 102, 204, 0.2);">
+                                <i class="fab fa-bitcoin" style="color: #f7931a;"></i>
+                            </div>
+                            <div>
+                                <p style="font-weight: 600;">Bitcoin Purchase</p>
+                                <p style="color: var(--text-secondary); font-size: 12px;">0.15 BTC</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <p class="transaction-amount transaction-negative">-$6,487.50</p>
+                            <p style="color: var(--text-secondary); font-size: 12px;">Yesterday, 03:45 PM</p>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item">
+                        <div style="display: flex; align-items: center;">
+                            <div class="transaction-icon" style="background: rgba(0, 255, 136, 0.2);">
+                                <i class="fas fa-percent" style="color: var(--success-color);"></i>
+                            </div>
+                            <div>
+                                <p style="font-weight: 600;">Interest Payment</p>
+                                <p style="color: var(--text-secondary); font-size: 12px;">Monthly Interest</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <p class="transaction-amount transaction-positive">+$1,250.00</p>
+                            <p style="color: var(--text-secondary); font-size: 12px;">Jan 1, 12:00 AM</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Crypto Wallet -->
+            <section id="crypto" class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fab fa-bitcoin"></i> Crypto Wallet</h2>
+                    <button class="btn btn-primary" onclick="openModal('buyCryptoModal')">
+                        <i class="fas fa-plus"></i> Buy Crypto
+                    </button>
+                </div>
+
+                <div class="grid-3">
+                    <div class="crypto-card">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="crypto-icon bitcoin"><i class="fab fa-bitcoin"></i></div>
+                            <div>
+                                <h4 style="margin: 0;">Bitcoin</h4>
+                                <p style="color: var(--text-secondary); font-size: 12px;">BTC</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 28px; font-weight: bold; color: var(--accent-color); margin: 15px 0;">₿ 2.4532</p>
+                        <p style="color: var(--text-secondary);">≈ $106,125.60</p>
+                        <p style="color: var(--success-color); font-size: 12px;">+2.34% today</p>
+                    </div>
+
+                    <div class="crypto-card">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="crypto-icon ethereum"><i class="fab fa-ethereum"></i></div>
+                            <div>
+                                <h4 style="margin: 0;">Ethereum</h4>
+                                <p style="color: var(--text-secondary); font-size: 12px;">ETH</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 28px; font-weight: bold; color: var(--accent-color); margin: 15px 0;">Ξ 15.7823</p>
+                        <p style="color: var(--text-secondary);">≈ $38,052.75</p>
+                        <p style="color: var(--success-color); font-size: 12px;">+1.87% today</p>
+                    </div>
+
+                    <div class="crypto-card">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="crypto-icon usdt">$</div>
+                            <div>
+                                <h4 style="margin: 0;">Tether</h4>
+                                <p style="color: var(--text-secondary); font-size: 12px;">USDT</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 28px; font-weight: bold; color: var(--accent-color); margin: 15px 0;">$25,000.00</p>
+                        <p style="color: var(--text-secondary);">Stablecoin</p>
+                        <p style="color: var(--text-secondary); font-size: 12px;">$1.00 pegged</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FX Exchange -->
+            <section id="fx" class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-exchange-alt"></i> Currency Exchange</h2>
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <div class="form-group">
+                            <label>From Currency</label>
+                            <select id="fromCurrency">
+                                <option value="USD">USD - US Dollar</option>
+                                <option value="EUR">EUR - Euro</option>
+                                <option value="GBP">GBP - British Pound</option>
+                                <option value="NGN">NGN - Nigerian Naira</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount</label>
+                            <input type="number" id="fromAmount" placeholder="Enter amount" value="1000">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label>To Currency</label>
+                            <select id="toCurrency">
+                                <option value="EUR">EUR - Euro</option>
+                                <option value="USD">USD - US Dollar</option>
+                                <option value="GBP">GBP - British Pound</option>
+                                <option value="NGN">NGN - Nigerian Naira</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>You'll Receive</label>
+                            <input type="text" id="toAmount" value="€918.50" disabled style="background: rgba(0, 255, 136, 0.1); color: var(--success-color);">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: var(--gradient-1); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: var(--text-secondary);">Exchange Rate:</span>
+                        <span style="color: var(--primary-color); font-weight: bold;">1 USD = 0.9185 EUR</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-secondary);">Fee:</span>
+                        <span style="color: var(--success-color);">$0.00 (No fees!)</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="executeExchange()">
+                    <i class="fas fa-exchange-alt"></i> Exchange Now
+                </button>
+            </section>
+
+            <!-- Linked Forex Account -->
+            <section class="card" style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%); border: 2px solid var(--primary-color);">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-link"></i> Linked Trading Account</h2>
+                    <span class="status status-active">Connected</span>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    Your Global Pilgrim Bank account is linked to Meta Forex Trading Platform. Transfer funds instantly between accounts.
+                </p>
+                <div class="grid-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Forex Real Balance</div>
+                        <div class="stat-value">$50,000.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Forex Profit Balance</div>
+                        <div class="stat-value" style="color: var(--success-color);">$12,500.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Robot Profits</div>
+                        <div class="stat-value" style="color: var(--accent-color);">$78,900.00</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="transferToForex()">
+                        <i class="fas fa-arrow-right"></i> Transfer to Forex
+                    </button>
+                    <button class="btn btn-success" onclick="transferFromForex()">
+                        <i class="fas fa-arrow-left"></i> Transfer from Forex
+                    </button>
+                    <a href="../index.html" class="btn btn-outline">
+                        <i class="fas fa-external-link-alt"></i> Open Forex Platform
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Send Money Modal -->
+    <div id="sendMoneyModal" class="modal">
+        <div class="modal-content">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-paper-plane"></i> Send Money</h3>
+                <button class="btn btn-outline" onclick="closeModal('sendMoneyModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="sendMoneyForm">
+                <div class="form-group">
+                    <label>Recipient</label>
+                    <input type="text" placeholder="Email, phone, or account number">
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" placeholder="Enter amount">
+                </div>
+                <div class="form-group">
+                    <label>Reference (Optional)</label>
+                    <input type="text" placeholder="What's this for?">
+                </div>
+                <div class="form-group">
+                    <label>Payment Network</label>
+                    <select>
+                        <option>Internal Transfer (Instant)</option>
+                        <option>SWIFT (1-3 days)</option>
+                        <option>SEPA (1 day)</option>
+                        <option>ACH (1-2 days)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-paper-plane"></i> Send Money
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-plus"></i> Add Money</h3>
+                <button class="btn btn-outline" onclick="closeModal('depositModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="depositForm">
+                <div class="form-group">
+                    <label>Deposit Method</label>
+                    <select>
+                        <option>Bank Transfer</option>
+                        <option>Debit/Credit Card</option>
+                        <option>Apple Pay</option>
+                        <option>Bitcoin</option>
+                        <option>Ethereum</option>
+                        <option>USDT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" placeholder="Enter amount">
+                </div>
+                <button type="submit" class="btn btn-success" style="width: 100%;">
+                    <i class="fas fa-plus"></i> Add Money
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-minus"></i> Withdraw</h3>
+                <button class="btn btn-outline" onclick="closeModal('withdrawModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="withdrawForm">
+                <div class="form-group">
+                    <label>Withdrawal Method</label>
+                    <select>
+                        <option>Bank Account</option>
+                        <option>Crypto Wallet</option>
+                        <option>Wire Transfer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" placeholder="Enter amount">
+                </div>
+                <button type="submit" class="btn btn-warning" style="width: 100%;">
+                    <i class="fas fa-minus"></i> Withdraw
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="user-bank.js"></script>
+</body>
+</html>

@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Account - Global Pilgrim Bank</title>
+    <link rel="stylesheet" href="bank-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .onboarding-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+        
+        .onboarding-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .onboarding-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #4169e1, #1e3a8a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .onboarding-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: var(--border-color);
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+        
+        .step.completed .step-circle {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .step.active .step-circle {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(65, 105, 225, 0.2);
+        }
+        
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .step.completed .step-label,
+        .step.active .step-label {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .step-form {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .step-form h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .step-form h2 i {
+            color: var(--primary-color);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .form-group small {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+        
+        .account-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .account-type-card {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .account-type-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        .account-type-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(65, 105, 225, 0.05);
+        }
+        
+        .account-type-card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .account-type-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .account-type-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .account-features {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+        
+        .account-features li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .account-features li::before {
+            content: '✓ ';
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .security-section {
+            background: rgba(65, 105, 225, 0.05);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .security-section h4 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+        }
+        
+        .strength-meter {
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 0.25rem;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .strength-bar.weak { width: 33%; background: #dc3545; }
+        .strength-bar.medium { width: 66%; background: #ffc107; }
+        .strength-bar.strong { width: 100%; background: #28a745; }
+        
+        .strength-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .terms-section {
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .terms-section h4 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            margin-top: 0.25rem;
+        }
+        
+        .checkbox-item label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .checkbox-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .summary-section {
+            background: rgba(65, 105, 225, 0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .summary-section h3 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .summary-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .summary-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .form-actions button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-secondary {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--text-secondary);
+            color: white;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #4169e1, #1e3a8a);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
+        }
+        
+        .success-message {
+            text-align: center;
+            padding: 3rem;
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(40, 167, 69, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .success-icon i {
+            font-size: 3rem;
+            color: #28a745;
+        }
+        
+        .success-message h2 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .success-message p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        .account-details {
+            background: rgba(65, 105, 225, 0.05);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+        
+        .account-details h4 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .account-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+        }
+        
+        @media (max-width: 768px) {
+            .stepper::before {
+                display: none;
+            }
+            
+            .stepper {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-university"></i>
+            <span>Global Pilgrim Bank</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Login</a>
+            <a href="customer-onboarding.html" class="active">Open Account</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <main class="content">
+            <div class="onboarding-container">
+                <div class="onboarding-header">
+                    <h1>Open Your Account</h1>
+                    <p>Join Global Pilgrim Bank and experience seamless banking worldwide</p>
+                </div>
+
+                <!-- Stepper -->
+                <div class="stepper">
+                    <div class="step active" id="step1Indicator">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">Personal Info</div>
+                    </div>
+                    <div class="step" id="step2Indicator">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Account Type</div>
+                    </div>
+                    <div class="step" id="step3Indicator">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Security</div>
+                    </div>
+                    <div class="step" id="step4Indicator">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Review</div>
+                    </div>
+                    <div class="step" id="step5Indicator">
+                        <div class="step-circle">5</div>
+                        <div class="step-label">Complete</div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Personal Information -->
+                <div class="step-form" id="step1">
+                    <h2><i class="fas fa-user"></i> Personal Information</h2>
+                    <form id="personalInfoForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name *</label>
+                                <input type="text" id="firstName" required placeholder="Enter your first name">
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name *</label>
+                                <input type="text" id="lastName" required placeholder="Enter your last name">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email Address *</label>
+                                <input type="email" id="email" required placeholder="your.email@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number *</label>
+                                <input type="tel" id="phone" required placeholder="+234 XXX XXX XXXX">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date of Birth *</label>
+                                <input type="date" id="dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender *</label>
+                                <select id="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nationality *</label>
+                                <select id="nationality" required>
+                                    <option value="">Select Country</option>
+                                    <option value="nigeria">Nigeria</option>
+                                    <option value="usa">United States</option>
+                                    <option value="uk">United Kingdom</option>
+                                    <option value="ghana">Ghana</option>
+                                    <option value="kenya">Kenya</option>
+                                    <option value="south_africa">South Africa</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Government ID Type *</label>
+                                <select id="idType" required>
+                                    <option value="">Select ID Type</option>
+                                    <option value="passport">International Passport</option>
+                                    <option value="driver_license">Driver's License</option>
+                                    <option value="national_id">National ID Card</option>
+                                    <option value="voter_card">Voter's Card</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label>Government ID Number *</label>
+                            <input type="text" id="idNumber" required placeholder="Enter your ID number">
+                            <small>This information will be verified during KYC process</small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" onclick="goToLogin()">
+                                <i class="fas fa-arrow-left"></i> Back to Login
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                Next Step <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 2: Account Type -->
+                <div class="step-form" id="step2" style="display: none;">
+                    <h2><i class="fas fa-university"></i> Choose Account Type</h2>
+                    <p style="margin-bottom: 2rem; color: var(--text-secondary);">Select the type of account that best suits your needs</p>
+                    
+                    <div class="account-types">
+                        <div class="account-type-card" onclick="selectAccountType(this, 'savings')">
+                            <i class="fas fa-piggy-bank"></i>
+                            <h3>Savings Account</h3>
+                            <p>Perfect for everyday banking and saving money</p>
+                            <ul class="account-features">
+                                <li>Competitive interest rates</li>
+                                <li>Free debit card</li>
+                                <li>Mobile banking access</li>
+                                <li>Minimum balance: ₦1,000</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="account-type-card" onclick="selectAccountType(this, 'current')">
+                            <i class="fas fa-credit-card"></i>
+                            <h3>Current Account</h3>
+                            <p>For businesses and frequent transactions</p>
+                            <ul class="account-features">
+                                <li>Unlimited transactions</li>
+                                <li>Overdraft facility</li>
+                                <li>Checkbook included</li>
+                                <li>Minimum balance: ₦5,000</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="account-type-card" onclick="selectAccountType(this, 'investment')">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>Investment Account</h3>
+                            <p>Grow your wealth with our investment options</p>
+                            <ul class="account-features">
+                                <li>High-yield returns</li>
+                                <li>Portfolio management</li>
+                                <li>Wealth advisory</li>
+                                <li>Minimum balance: ₦50,000</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Initial Deposit Amount (₦) *</label>
+                            <input type="number" id="initialDeposit" required min="1000" step="1000" placeholder="Enter initial deposit">
+                        </div>
+                        <div class="form-group">
+                            <label>Currency Preference *</label>
+                            <select id="currency" required>
+                                <option value="NGN">Nigerian Naira (NGN)</option>
+                                <option value="USD">US Dollar (USD)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                                <option value="GBP">British Pound (GBP)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="previousStep(2)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn-primary" onclick="validateStep2()">
+                            Next Step <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Security -->
+                <div class="step-form" id="step3" style="display: none;">
+                    <h2><i class="fas fa-shield-alt"></i> Security Setup</h2>
+                    
+                    <div class="security-section">
+                        <h4><i class="fas fa-lock"></i> Create Password</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Password *</label>
+                                <input type="password" id="password" required placeholder="Create a strong password" oninput="checkPasswordStrength(this.value)">
+                                <div class="password-strength">
+                                    <div class="strength-meter">
+                                        <div class="strength-bar" id="strengthBar"></div>
+                                    </div>
+                                    <div class="strength-text" id="strengthText">Password strength</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password *</label>
+                                <input type="password" id="confirmPassword" required placeholder="Confirm your password">
+                            </div>
+                        </div>
+                        <small>Password must be at least 8 characters with uppercase, lowercase, numbers, and special characters</small>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Security Question 1 *</label>
+                            <select id="securityQuestion1" required>
+                                <option value="">Select a question</option>
+                                <option value="mother_maiden">What is your mother's maiden name?</option>
+                                <option value="first_pet">What was the name of your first pet?</option>
+                                <option value="birth_city">In which city were you born?</option>
+                                <option value="first_school">What was the name of your first school?</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Answer 1 *</label>
+                            <input type="text" id="answer1" required placeholder="Your answer">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Security Question 2 *</label>
+                            <select id="securityQuestion2" required>
+                                <option value="">Select a question</option>
+                                <option value="mother_maiden">What is your mother's maiden name?</option>
+                                <option value="first_pet">What was the name of your first pet?</option>
+                                <option value="birth_city">In which city were you born?</option>
+                                <option value="first_school">What was the name of your first school?</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Answer 2 *</label>
+                            <input type="text" id="answer2" required placeholder="Your answer">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="previousStep(3)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn-primary" onclick="validateStep3()">
+                            Next Step <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Review -->
+                <div class="step-form" id="step4" style="display: none;">
+                    <h2><i class="fas fa-check-circle"></i> Review Your Information</h2>
+                    <p style="margin-bottom: 2rem; color: var(--text-secondary);">Please review your information before submitting</p>
+                    
+                    <div class="summary-section">
+                        <h3>Personal Information</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-label">Full Name</div>
+                                <div class="summary-value" id="reviewName">-</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Email Address</div>
+                                <div class="summary-value" id="reviewEmail">-</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Phone Number</div>
+                                <div class="summary-value" id="reviewPhone">-</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Date of Birth</div>
+                                <div class="summary-value" id="reviewDob">-</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Nationality</div>
+                                <div class="summary-value" id="reviewNationality">-</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">ID Type</div>
+                                <div class="summary-value" id="reviewIdType">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-section">
+                        <h3>Account Details</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-label">Account Type</div>
+                                <div class="summary-value" id="reviewAccountType">-</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Initial Deposit</div>
+                                <div class="summary-value" id="reviewDeposit">-</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">Currency</div>
+                                <div class="summary-value" id="reviewCurrency">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="terms-section">
+                        <h4>Terms and Conditions</h4>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <label for="agreeTerms">I have read and agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> of Global Pilgrim Bank *</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="agreeConsent" required>
+                                <label for="agreeConsent">I consent to Global Pilgrim Bank collecting and processing my personal data in accordance with applicable laws and regulations *</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="agreeComms">
+                                <label for="agreeComms">I agree to receive promotional communications and offers from Global Pilgrim Bank</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="previousStep(4)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn-primary" onclick="submitApplication()">
+                            <i class="fas fa-paper-plane"></i> Submit Application
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Success -->
+                <div class="step-form" id="step5" style="display: none;">
+                    <div class="success-message">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h2>Congratulations! 🎉</h2>
+                        <p>Your account has been successfully created</p>
+                        
+                        <div class="account-details">
+                            <h4>Your New Account Number</h4>
+                            <div class="account-number" id="newAccountNumber">GPB-2024-XXXXXXXX</div>
+                        </div>
+                        
+                        <p>Welcome to Global Pilgrim Bank! Your account is now active and ready to use.</p>
+                        
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn-primary" onclick="goToLogin()">
+                                <i class="fas fa-sign-in-alt"></i> Login to Your Account
+                            </button>
+                            <button class="btn-secondary" onclick="window.location.reload()">
+                                <i class="fas fa-redo"></i> Create Another Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let formData = {
+            personal: {},
+            account: {},
+            security: {}
+        };
+        let selectedAccountType = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initFormHandlers();
+        });
+
+        // Initialize Form Handlers
+        function initFormHandlers() {
+            // Personal Info Form
+            document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                savePersonalInfo();
+                nextStep();
+            });
+        }
+
+        // Save Personal Info
+        function savePersonalInfo() {
+            formData.personal = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                dob: document.getElementById('dob').value,
+                gender: document.getElementById('gender').value,
+                nationality: document.getElementById('nationality').value,
+                idType: document.getElementById('idType').value,
+                idNumber: document.getElementById('idNumber').value
+            };
+        }
+
+        // Select Account Type
+        function selectAccountType(element, type) {
+            document.querySelectorAll('.account-type-card').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedAccountType = type;
+            formData.account.type = type;
+        }
+
+        // Validate Step 2
+        function validateStep2() {
+            if (!selectedAccountType) {
+                alert('Please select an account type');
+                return;
+            }
+            
+            const initialDeposit = document.getElementById('initialDeposit').value;
+            if (!initialDeposit || parseFloat(initialDeposit) < 1000) {
+                alert('Initial deposit must be at least ₦1,000');
+                return;
+            }
+            
+            formData.account.initialDeposit = initialDeposit;
+            formData.account.currency = document.getElementById('currency').value;
+            
+            populateReview();
+            nextStep();
+        }
+
+        // Check Password Strength
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            
+            strengthBar.className = 'strength-bar';
+            
+            if (strength <= 2) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = 'Weak password';
+            } else if (strength <= 4) {
+                strengthBar.classList.add('medium');
+                strengthText.textContent = 'Medium strength';
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = 'Strong password';
+            }
+        }
+
+        // Validate Step 3
+        function validateStep3() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            const answer1 = document.getElementById('answer1').value;
+            const answer2 = document.getElementById('answer2').value;
+            
+            if (!answer1 || !answer2) {
+                alert('Please answer all security questions');
+                return;
+            }
+            
+            formData.security = {
+                password: password,
+                question1: document.getElementById('securityQuestion1').value,
+                answer1: answer1,
+                question2: document.getElementById('securityQuestion2').value,
+                answer2: answer2
+            };
+            
+            nextStep();
+        }
+
+        // Populate Review Section
+        function populateReview() {
+            document.getElementById('reviewName').textContent = 
+                formData.personal.firstName + ' ' + formData.personal.lastName;
+            document.getElementById('reviewEmail').textContent = formData.personal.email;
+            document.getElementById('reviewPhone').textContent = formData.personal.phone;
+            document.getElementById('reviewDob').textContent = formatDate(formData.personal.dob);
+            document.getElementById('reviewNationality').textContent = capitalizeFirst(formData.personal.nationality);
+            document.getElementById('reviewIdType').textContent = formatIdType(formData.personal.idType);
+            document.getElementById('reviewAccountType').textContent = capitalizeFirst(selectedAccountType) + ' Account';
+            document.getElementById('reviewDeposit').textContent = '₦' + parseFloat(formData.account.initialDeposit).toLocaleString();
+            document.getElementById('reviewCurrency').textContent = formData.account.currency;
+        }
+
+        // Submit Application
+        function submitApplication() {
+            const termsAgreed = document.getElementById('agreeTerms').checked;
+            const consentAgreed = document.getElementById('agreeConsent').checked;
+            
+            if (!termsAgreed || !consentAgreed) {
+                alert('Please agree to all required terms and conditions');
+                return;
+            }
+            
+            // Simulate submission
+            const submitBtn = event.target;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Generate account number
+                const accountNum = 'GPB-2024-' + Math.floor(1000000 + Math.random() * 9000000);
+                document.getElementById('newAccountNumber').textContent = accountNum;
+                
+                nextStep();
+                speakMessage('Congratulations! Your account has been successfully created.');
+            }, 2000);
+        }
+
+        // Next Step
+        function nextStep() {
+            document.getElementById('step' + currentStep).style.display = 'none';
+            document.getElementById('step' + currentStep + 'Indicator').classList.add('completed');
+            document.getElementById('step' + currentStep + 'Indicator').classList.remove('active');
+            
+            currentStep++;
+            
+            document.getElementById('step' + currentStep).style.display = 'block';
+            document.getElementById('step' + currentStep + 'Indicator').classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Previous Step
+        function previousStep(step) {
+            document.getElementById('step' + step).style.display = 'none';
+            document.getElementById('step' + step + 'Indicator').classList.remove('active');
+            
+            currentStep = step - 1;
+            
+            document.getElementById('step' + currentStep).style.display = 'block';
+            document.getElementById('step' + currentStep + 'Indicator').classList.remove('completed');
+            document.getElementById('step' + currentStep + 'Indicator').classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Go to Login
+        function goToLogin() {
+            window.location.href = 'index.html';
+        }
+
+        // Helper Functions
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function formatIdType(type) {
+            const types = {
+                'passport': 'International Passport',
+                'driver_license': "Driver's License",
+                'national_id': 'National ID Card',
+                'voter_card': "Voter's Card"
+            };
+            return types[type] || type;
+        }
+
+        function speakMessage(message) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(message);
+                utterance.rate = 0.9;
+                speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Pilgrim Bank - Digital Banking Ecosystem</title>
+    <link rel="stylesheet" href="bank-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body class="login-container">
+    <div class="login-box">
+        <div class="login-logo">
+            <div class="bank-emblem">
+                <i class="fas fa-university"></i>
+            </div>
+            <h1>🏦 Global Pilgrim Bank</h1>
+            <p style="color: var(--accent-color); font-weight: 600; margin-top: 10px;">
+                Full Digital Banking Ecosystem
+            </p>
+            <p style="color: var(--text-secondary); font-size: 12px; margin-top: 5px;">
+                Connected to Global Payment Networks
+            </p>
+            <div class="network-badges">
+                <span class="badge">Visa</span>
+                <span class="badge">Mastercard</span>
+                <span class="badge">SWIFT</span>
+                <span class="badge">Apple Pay</span>
+            </div>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="accountType"><i class="fas fa-user-tag"></i> Login As</label>
+                <select id="accountType" name="accountType">
+                    <option value="admin">Administrator</option>
+                    <option value="user">Customer</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="remember" name="remember">
+                    Remember me
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-sign-in-alt"></i> Login to Banking Dashboard
+            </button>
+        </form>
+
+        <div style="margin-top: 20px; text-align: center;">
+            <p style="color: var(--text-secondary); font-size: 14px;">
+                <i class="fas fa-shield-alt"></i> Secured by 256-bit SSL Encryption
+            </p>
+        </div>
+
+        <div class="admin-info" style="margin-top: 20px; padding: 15px; background: var(--gradient-1); border-radius: 8px; border: 1px solid var(--border-color);">
+            <p style="color: var(--primary-color); font-weight: 600; font-size: 14px;">
+                <i class="fas fa-user-shield"></i> Administrator
+            </p>
+            <p style="color: var(--text-secondary); font-size: 12px;">Olawale Abdul-Ganiyu Adeshina</p>
+            <p style="color: var(--text-secondary); font-size: 11px; margin-top: 5px;">
+                <i class="fas fa-envelope"></i> adeganglobal@gmail.com
+            </p>
+            <p style="color: var(--text-secondary); font-size: 11px;">
+                <i class="fas fa-phone"></i> +2349030277275
+            </p>
+            <p style="color: var(--accent-color); font-size: 10px; margin-top: 5px;">
+                <i class="fas fa-signature"></i> Payment Signature: Olawale Abdul-Ganiyu Adeshina/Trading Platform
+            </p>
+        </div>
+
+        <div style="margin-top: 15px; text-align: center;">
+            <a href="#" style="color: var(--primary-color); font-size: 12px;">Forgot Password?</a>
+            <span style="color: var(--text-secondary);"> | </span>
+            <a href="customer-onboarding.html" style="color: var(--primary-color); font-size: 12px;">Open New Account</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const accountType = document.getElementById('accountType').value;
+
+            // Voice prompt for login
+            speakMessage('Authenticating credentials. Please wait.');
+
+            // Check for admin credentials
+            if (email === 'adeganglobal@gmail.com' && password === 'admin123' && accountType === 'admin') {
+                speakMessage('Administrator access granted. Welcome back, Olawale Abdul-Ganiyu Adeshina.');
+                window.location.href = 'admin-dashboard.html';
+            } else if (email && password && accountType === 'user') {
+                speakMessage('Customer access granted. Welcome to Global Pilgrim Bank.');
+                window.location.href = 'user-dashboard.html';
+            } else {
+                speakMessage('Authentication failed. Please check your credentials.');
+                showNotification('Please enter valid credentials', 'error');
+            }
+        });
+
+        // Text-to-speech function
+        function speakMessage(message) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(message);
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Auto-fill demo credentials
+        document.getElementById('email').value = 'adeganglobal@gmail.com';
+        document.getElementById('password').value = 'admin123';
+    </script>
+</body>
+</html>

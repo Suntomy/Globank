@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KYC Verification - Global Pilgrim Bank</title>
+    <link rel="stylesheet" href="css/bank-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .kyc-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .kyc-status-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .kyc-status-card.verified {
+            border-color: #28a745;
+        }
+        
+        .kyc-status-card.pending {
+            border-color: #ffc107;
+        }
+        
+        .kyc-status-card.rejected {
+            border-color: #dc3545;
+        }
+        
+        .kyc-status-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        
+        .kyc-status-icon.verified {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        
+        .kyc-status-icon.pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+        
+        .kyc-status-icon.rejected {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .kyc-status-icon.incomplete {
+            background: rgba(65, 105, 225, 0.1);
+            color: #4169e1;
+        }
+        
+        .kyc-status-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .kyc-status-message {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .kyc-progress {
+            background: rgba(65, 105, 225, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .kyc-progress h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .progress-bar-container {
+            background: var(--border-color);
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4169e1, #1e3a8a);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .kyc-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        
+        .kyc-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .kyc-step::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--border-color);
+        }
+        
+        .kyc-step:last-child::after {
+            display: none;
+        }
+        
+        .kyc-step.completed::after {
+            background: #28a745;
+        }
+        
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .kyc-step.completed .step-icon {
+            background: #28a745;
+            color: white;
+        }
+        
+        .kyc-step.active .step-icon {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .kyc-step.completed .step-label,
+        .kyc-step.active .step-label {
+            color: var(--text-primary);
+        }
+        
+        .kyc-form-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .kyc-form-section h3 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .kyc-form-section h3 i {
+            color: var(--primary-color);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .form-group input:disabled {
+            background: rgba(0,0,0,0.1);
+            cursor: not-allowed;
+        }
+        
+        .document-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+        
+        .document-upload:hover {
+            border-color: var(--primary-color);
+            background: rgba(65, 105, 225, 0.05);
+        }
+        
+        .document-upload.dragover {
+            border-color: var(--primary-color);
+            background: rgba(65, 105, 225, 0.1);
+        }
+        
+        .document-upload i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .document-upload p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .document-upload .file-types {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .document-preview {
+            background: rgba(65, 105, 225, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .document-preview i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .document-preview .file-info {
+            flex: 1;
+        }
+        
+        .document-preview .file-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .document-preview .file-size {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .document-preview .remove-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+        
+        .selfie-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .selfie-preview {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid var(--primary-color);
+            overflow: hidden;
+            margin-bottom: 1rem;
+            background: rgba(65, 105, 225, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .selfie-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .selfie-preview i {
+            font-size: 4rem;
+            color: var(--primary-color);
+        }
+        
+        .camera-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .camera-btn:hover {
+            background: #3651a3;
+        }
+        
+        .beneficial-owners {
+            background: rgba(65, 105, 225, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .beneficial-owners h4 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .owner-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .owner-item:last-child {
+            border-bottom: none;
+        }
+        
+        .add-owner-btn {
+            width: 100%;
+            padding: 1rem;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .add-owner-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .terms-checkbox input {
+            margin-top: 0.25rem;
+        }
+        
+        .terms-checkbox label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .terms-checkbox a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .submit-kyc-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, #4169e1, #1e3a8a);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-kyc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
+        }
+        
+        .submit-kyc-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        @media (max-width: 768px) {
+            .kyc-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .kyc-step::after {
+                display: none;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-university"></i>
+            <span>Global Pilgrim Bank</span>
+        </div>
+        <div class="nav-links">
+            <a href="user-dashboard.html">Dashboard</a>
+            <a href="transactions.html">Transactions</a>
+            <a href="cards.html">Cards</a>
+            <a href="wallet.html">Wallet</a>
+            <a href="kyc.html" class="active">KYC</a>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Olawale Abdul-Ganiyu Adeshina</span>
+            <button class="btn btn-outline" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-info">
+                    <h3 id="sidebarUserName">Olawale Abdul-Ganiyu Adeshina</h3>
+                    <p id="sidebarEmail">adeganglobal@gmail.com</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="user-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="transactions.html"><i class="fas fa-history"></i> Transactions</a></li>
+                <li><a href="cards.html"><i class="fas fa-credit-card"></i> My Cards</a></li>
+                <li><a href="wallet.html"><i class="fas fa-wallet"></i> Wallet</a></li>
+                <li><a href="kyc.html" class="active"><i class="fas fa-user-check"></i> KYC Verification</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <p>Need Help?</p>
+                <a href="#"><i class="fas fa-headset"></i> Contact Support</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="kyc-container">
+                <h1 class="page-title">KYC Verification</h1>
+
+                <!-- KYC Status Card -->
+                <div class="kyc-status-card" id="kycStatusCard">
+                    <div class="kyc-status-icon incomplete" id="kycStatusIcon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="kyc-status-title" id="kycStatusTitle">Verification In Progress</div>
+                    <div class="kyc-status-message" id="kycStatusMessage">
+                        Complete all sections below to verify your identity and unlock full account features.
+                    </div>
+                </div>
+
+                <!-- Progress -->
+                <div class="kyc-progress">
+                    <h3><i class="fas fa-chart-pie"></i> Completion Progress</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar" style="width: 60%"></div>
+                    </div>
+                    <div class="progress-text"><span id="progressPercent">60</span>% Complete</div>
+                </div>
+
+                <!-- Steps -->
+                <div class="kyc-steps">
+                    <div class="kyc-step completed" id="step1">
+                        <div class="step-icon"><i class="fas fa-check"></i></div>
+                        <div class="step-label">Personal Info</div>
+                    </div>
+                    <div class="kyc-step completed" id="step2">
+                        <div class="step-icon"><i class="fas fa-check"></i></div>
+                        <div class="step-label">Address</div>
+                    </div>
+                    <div class="kyc-step active" id="step3">
+                        <div class="step-icon"><i class="fas fa-id-card"></i></div>
+                        <div class="step-label">Documents</div>
+                    </div>
+                    <div class="kyc-step" id="step4">
+                        <div class="step-icon"><i class="fas fa-camera"></i></div>
+                        <div class="step-label">Selfie</div>
+                    </div>
+                    <div class="kyc-step" id="step5">
+                        <div class="step-icon"><i class="fas fa-check-double"></i></div>
+                        <div class="step-label">Submit</div>
+                    </div>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="kyc-form-section">
+                    <h3><i class="fas fa-user"></i> Personal Information</h3>
+                    <form id="personalInfoForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="fullName" value="Olawale Abdul-Ganiyu Adeshina" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="date" id="dob" value="1990-05-15" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="email" value="adeganglobal@gmail.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="phone" value="+2349030277275" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nationality</label>
+                                <select id="nationality" required>
+                                    <option value="nigeria" selected>Nigeria</option>
+                                    <option value="usa">United States</option>
+                                    <option value="uk">United Kingdom</option>
+                                    <option value="ghana">Ghana</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <select id="gender" required>
+                                    <option value="male" selected>Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+                            <i class="fas fa-save"></i> Save Personal Info
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Address Information -->
+                <div class="kyc-form-section">
+                    <h3><i class="fas fa-map-marker-alt"></i> Address Information</h3>
+                    <form id="addressForm">
+                        <div class="form-grid">
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Street Address</label>
+                                <input type="text" id="street" value="123 Main Street, Victoria Island" required>
+                            </div>
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" id="city" value="Lagos" required>
+                            </div>
+                            <div class="form-group">
+                                <label>State/Province</label>
+                                <input type="text" id="state" value="Lagos State" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Postal Code</label>
+                                <input type="text" id="postalCode" value="101241" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Country</label>
+                                <select id="country" required>
+                                    <option value="nigeria" selected>Nigeria</option>
+                                    <option value="usa">United States</option>
+                                    <option value="uk">United Kingdom</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+                            <i class="fas fa-save"></i> Save Address
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Document Upload -->
+                <div class="kyc-form-section">
+                    <h3><i class="fas fa-file-upload"></i> Identity Documents</h3>
+                    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                        Please upload a valid government-issued ID. Accepted documents: Passport, Driver's License, National ID.
+                    </p>
+                    
+                    <label style="margin-bottom: 0.5rem; display: block;">Document Type</label>
+                    <select id="documentType" style="padding: 0.75rem; margin-bottom: 1rem; width: 100%; max-width: 300px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary);">
+                        <option value="passport">International Passport</option>
+                        <option value="driver_license">Driver's License</option>
+                        <option value="national_id">National ID Card</option>
+                        <option value="voter_card">Voter's Card</option>
+                    </select>
+
+                    <div class="document-upload" id="documentUpload1">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p><strong>Front of Document</strong></p>
+                        <p>Drag and drop or click to upload</p>
+                        <span class="file-types">JPG, PNG, PDF (Max 10MB)</span>
+                        <input type="file" id="documentFront" accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                    </div>
+                    
+                    <div class="document-upload" id="documentUpload2">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p><strong>Back of Document</strong> (if applicable)</p>
+                        <p>Drag and drop or click to upload</p>
+                        <span class="file-types">JPG, PNG, PDF (Max 10MB)</span>
+                        <input type="file" id="documentBack" accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                    </div>
+                    
+                    <div id="uploadedDocuments"></div>
+                </div>
+
+                <!-- Selfie Verification -->
+                <div class="kyc-form-section">
+                    <h3><i class="fas fa-camera"></i> Selfie Verification</h3>
+                    <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                        Take a clear photo of yourself holding your ID document next to your face.
+                    </p>
+                    
+                    <div class="selfie-container">
+                        <div class="selfie-preview" id="selfiePreview">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <button class="camera-btn" onclick="openCamera()">
+                            <i class="fas fa-camera"></i> Take Selfie
+                        </button>
+                        <input type="file" id="selfieInput" accept="image/*" capture="user" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Terms and Submit -->
+                <div class="kyc-form-section">
+                    <h3><i class="fas fa-check-circle"></i> Declaration & Consent</h3>
+                    
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="termsAgree">
+                        <label for="termsAgree">
+                            I confirm that all information provided is accurate and complete. I agree to the 
+                            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> of Global Pilgrim Bank.
+                        </label>
+                    </div>
+                    
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="consentAgree">
+                        <label for="consentAgree">
+                            I consent to Global Pilgrim Bank collecting and processing my personal data for KYC/AML compliance purposes.
+                        </label>
+                    </div>
+                    
+                    <button class="submit-kyc-btn" id="submitKycBtn" onclick="submitKYC()" disabled>
+                        <i class="fas fa-paper-plane"></i> Submit KYC Application
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/user-bank.js"></script>
+    <script>
+        // KYC State
+        let kycState = {
+            personalInfo: { completed: true, saved: true },
+            address: { completed: true, saved: true },
+            documents: { completed: false, frontUploaded: false, backUploaded: false },
+            selfie: { completed: false },
+            submitted: false
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initDocumentUploads();
+            initSelfieUpload();
+            initFormListeners();
+            updateProgress();
+        });
+
+        // Initialize Document Uploads
+        function initDocumentUploads() {
+            const uploadAreas = document.querySelectorAll('.document-upload');
+            
+            uploadAreas.forEach((area, index) => {
+                const input = area.querySelector('input[type="file"]');
+                
+                // Click to upload
+                area.addEventListener('click', () => input.click());
+                
+                // Drag and drop
+                area.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    area.classList.add('dragover');
+                });
+                
+                area.addEventListener('dragleave', () => {
+                    area.classList.remove('dragover');
+                });
+                
+                area.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    area.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        handleFileUpload(files[0], index === 0 ? 'front' : 'back');
+                    }
+                });
+                
+                // File input change
+                input.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) {
+                        handleFileUpload(e.target.files[0], index === 0 ? 'front' : 'back');
+                    }
+                });
+            });
+        }
+
+        // Handle File Upload
+        function handleFileUpload(file, type) {
+            const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            
+            if (!validTypes.includes(file.type)) {
+                alert('Invalid file type. Please upload JPG, PNG, or PDF.');
+                return;
+            }
+            
+            if (file.size > maxSize) {
+                alert('File too large. Maximum size is 10MB.');
+                return;
+            }
+            
+            const container = document.getElementById('uploadedDocuments');
+            const existingPreview = document.querySelector(`.document-preview[data-type="${type}"]`);
+            if (existingPreview) {
+                existingPreview.remove();
+            }
+            
+            const preview = document.createElement('div');
+            preview.className = 'document-preview';
+            preview.dataset.type = type;
+            preview.innerHTML = `
+                <i class="fas ${file.type.includes('pdf') ? 'fa-file-pdf' : 'fa-file-image'}"></i>
+                <div class="file-info">
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${formatFileSize(file.size)}</div>
+                </div>
+                <button class="remove-btn" onclick="removeDocument('${type}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(preview);
+            
+            if (type === 'front') {
+                kycState.documents.frontUploaded = true;
+            } else {
+                kycState.documents.backUploaded = true;
+            }
+            
+            if (kycState.documents.frontUploaded) {
+                kycState.documents.completed = true;
+            }
+            
+            updateProgress();
+            speakMessage(`${type} document uploaded successfully`);
+        }
+
+        // Remove Document
+        function removeDocument(type) {
+            const preview = document.querySelector(`.document-preview[data-type="${type}"]`);
+            if (preview) {
+                preview.remove();
+            }
+            
+            if (type === 'front') {
+                kycState.documents.frontUploaded = false;
+            } else {
+                kycState.documents.backUploaded = false;
+            }
+            kycState.documents.completed = kycState.documents.frontUploaded;
+            updateProgress();
+        }
+
+        // Initialize Selfie Upload
+        function initSelfieUpload() {
+            const selfieInput = document.getElementById('selfieInput');
+            
+            selfieInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const preview = document.getElementById('selfiePreview');
+                        preview.innerHTML = `<img src="${e.target.result}" alt="Selfie">`;
+                        kycState.selfie.completed = true;
+                        updateProgress();
+                        speakMessage('Selfie uploaded successfully');
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Open Camera
+        function openCamera() {
+            document.getElementById('selfieInput').click();
+        }
+
+        // Initialize Form Listeners
+        function initFormListeners() {
+            // Personal Info Form
+            document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                kycState.personalInfo.saved = true;
+                kycState.personalInfo.completed = true;
+                updateProgress();
+                alert('Personal information saved!');
+                speakMessage('Personal information saved successfully');
+            });
+            
+            // Address Form
+            document.getElementById('addressForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                kycState.address.saved = true;
+                kycState.address.completed = true;
+                updateProgress();
+                alert('Address information saved!');
+                speakMessage('Address information saved successfully');
+            });
+            
+            // Terms checkboxes
+            document.getElementById('termsAgree').addEventListener('change', updateSubmitButton);
+            document.getElementById('consentAgree').addEventListener('change', updateSubmitButton);
+        }
+
+        // Update Progress
+        function updateProgress() {
+            const steps = [
+                { state: kycState.personalInfo, step: 'step1' },
+                { state: kycState.address, step: 'step2' },
+                { state: kycState.documents, step: 'step3' },
+                { state: kycState.selfie, step: 'step4' }
+            ];
+            
+            let completedCount = steps.filter(s => s.state.completed).length;
+            let progress = (completedCount / steps.length) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressPercent').textContent = Math.round(progress);
+            
+            steps.forEach((s, index) => {
+                const stepEl = document.getElementById(s.step);
+                const icon = stepEl.querySelector('.step-icon');
+                
+                if (s.state.completed) {
+                    stepEl.classList.add('completed');
+                    stepEl.classList.remove('active');
+                    icon.innerHTML = '<i class="fas fa-check"></i>';
+                } else if (index === completedCount) {
+                    stepEl.classList.add('active');
+                    icon.innerHTML = '<i class="fas fa-' + getStepIcon(index) + '"></i>';
+                }
+            });
+            
+            updateSubmitButton();
+        }
+
+        // Get Step Icon
+        function getStepIcon(index) {
+            const icons = ['user', 'map-marker-alt', 'id-card', 'camera', 'check-double'];
+            return icons[index] || 'circle';
+        }
+
+        // Update Submit Button
+        function updateSubmitButton() {
+            const termsAgree = document.getElementById('termsAgree').checked;
+            const consentAgree = document.getElementById('consentAgree').checked;
+            const allComplete = kycState.personalInfo.completed && 
+                               kycState.address.completed && 
+                               kycState.documents.completed && 
+                               kycState.selfie.completed;
+            
+            const submitBtn = document.getElementById('submitKycBtn');
+            submitBtn.disabled = !(allComplete && termsAgree && consentAgree);
+        }
+
+        // Submit KYC
+        function submitKYC() {
+            if (confirm('Are you sure you want to submit your KYC application?')) {
+                const submitBtn = document.getElementById('submitKycBtn');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    kycState.submitted = true;
+                    
+                    // Update status card
+                    const statusCard = document.getElementById('kycStatusCard');
+                    const statusIcon = document.getElementById('kycStatusIcon');
+                    const statusTitle = document.getElementById('kycStatusTitle');
+                    const statusMessage = document.getElementById('kycStatusMessage');
+                    
+                    statusCard.className = 'kyc-status-card pending';
+                    statusIcon.className = 'kyc-status-icon pending';
+                    statusIcon.innerHTML = '<i class="fas fa-hourglass-half"></i>';
+                    statusTitle.textContent = 'KYC Under Review';
+                    statusMessage.textContent = 'Your application has been submitted and is being reviewed by our team. This usually takes 1-2 business days.';
+                    
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Submitted';
+                    
+                    alert('KYC application submitted successfully! You will be notified once verification is complete.');
+                    speakMessage('KYC application submitted successfully. Your verification is under review.');
+                }, 2000);
+            }
+        }
+
+        // Format File Size
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

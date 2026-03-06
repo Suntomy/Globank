@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cards - Global Pilgrim Bank</title>
+    <link rel="stylesheet" href="bank-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cards-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .add-card-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .add-card-btn:hover {
+            background: #3651a3;
+            transform: translateY(-2px);
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .card-visual {
+            width: 100%;
+            aspect-ratio: 1.586;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .card-visual::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(25%, 25%) rotate(180deg); }
+        }
+        
+        .card-chip {
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffd700, #daa520);
+            border-radius: 6px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-chip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 20px;
+            background: linear-gradient(135deg, #b8860b, #8b6914);
+            border-radius: 4px;
+        }
+        
+        .card-number {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-holder {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .card-holder-label {
+            font-size: 0.65rem;
+            opacity: 0.7;
+            margin-bottom: 2px;
+        }
+        
+        .card-expiry {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .card-type {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            opacity: 0.8;
+            z-index: 1;
+        }
+        
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-info h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .card-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .card-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .card-status.active {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        
+        .card-status.frozen {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+        
+        .card-status.expired {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .card-action-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+        
+        .card-action-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .card-action-btn.danger:hover {
+            background: #dc3545;
+            border-color: #dc3545;
+        }
+        
+        .card-details-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .card-details-section h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-row label {
+            color: var(--text-secondary);
+        }
+        
+        .detail-row span {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .spending-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .spending-chart-container {
+            height: 300px;
+            margin-top: 1rem;
+        }
+        
+        /* New Card Modal */
+        .modal-content.large {
+            max-width: 600px;
+        }
+        
+        .card-type-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-type-option {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .card-type-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(65, 105, 225, 0.05);
+        }
+        
+        .card-type-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(65, 105, 225, 0.1);
+        }
+        
+        .card-type-option i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .card-type-option h4 {
+            margin: 0;
+            color: var(--text-primary);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-actions {
+                flex-direction: column;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-university"></i>
+            <span>Global Pilgrim Bank</span>
+        </div>
+        <div class="nav-links">
+            <a href="user-dashboard.html">Dashboard</a>
+            <a href="transactions.html">Transactions</a>
+            <a href="cards.html" class="active">Cards</a>
+            <a href="wallet.html">Wallet</a>
+            <a href="kyc.html">KYC</a>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Olawale Abdul-Ganiyu Adeshina</span>
+            <button class="btn btn-outline" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-info">
+                    <h3 id="sidebarUserName">Olawale Abdul-Ganiyu Adeshina</h3>
+                    <p id="sidebarEmail">adeganglobal@gmail.com</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="user-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="transactions.html"><i class="fas fa-history"></i> Transactions</a></li>
+                <li><a href="cards.html" class="active"><i class="fas fa-credit-card"></i> My Cards</a></li>
+                <li><a href="wallet.html"><i class="fas fa-wallet"></i> Wallet</a></li>
+                <li><a href="kyc.html"><i class="fas fa-user-check"></i> KYC Verification</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <p>Need Help?</p>
+                <a href="#"><i class="fas fa-headset"></i> Contact Support</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="cards-header">
+                <h1 class="page-title">My Cards</h1>
+                <button class="add-card-btn" onclick="openNewCardModal()">
+                    <i class="fas fa-plus"></i> Add New Card
+                </button>
+            </div>
+
+            <!-- Cards Grid -->
+            <section class="cards-grid" id="cardsGrid">
+                <!-- Cards will be loaded here -->
+            </section>
+
+            <!-- Card Details Panel -->
+            <section id="cardDetailsPanel" style="display: none;">
+                <div class="card-details-section">
+                    <h3>Card Details</h3>
+                    <div id="cardDetailsContent">
+                        <!-- Details will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="spending-section">
+                    <h3>Spending History</h3>
+                    <div class="spending-chart-container">
+                        <canvas id="spendingChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- New Card Modal -->
+    <div id="newCardModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2>Apply for New Card</h2>
+                <button class="close-btn" onclick="closeModal('newCardModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="newCardForm">
+                    <label>Select Card Type</label>
+                    <div class="card-type-selection">
+                        <div class="card-type-option" onclick="selectCardType(this, 'visa')">
+                            <i class="fab fa-cc-visa"></i>
+                            <h4>Visa</h4>
+                        </div>
+                        <div class="card-type-option" onclick="selectCardType(this, 'mastercard')">
+                            <i class="fab fa-cc-mastercard"></i>
+                            <h4>Mastercard</h4>
+                        </div>
+                        <div class="card-type-option" onclick="selectCardType(this, 'apple')">
+                            <i class="fab fa-apple-pay"></i>
+                            <h4>Apple Card</h4>
+                        </div>
+                        <div class="card-type-option" onclick="selectCardType(this, 'amex')">
+                            <i class="fab fa-cc-amex"></i>
+                            <h4>American Express</h4>
+                        </div>
+                    </div>
+                    
+                    <label for="cardName">Card Holder Name</label>
+                    <input type="text" id="cardName" value="Olawale Abdul-Ganiyu Adeshina" required>
+                    
+                    <div class="form-row">
+                        <div>
+                            <label for="cardAccount">Link Account</label>
+                            <select id="cardAccount" required>
+                                <option value="savings">Savings Account - GPB-SAV-8837</option>
+                                <option value="investment">Investment Account - GPB-INV-8838</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="cardLimit">Credit Limit</label>
+                            <input type="number" id="cardLimit" value="50000" min="1000" step="1000">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div>
+                            <label for="cardPin">PIN (4 digits)</label>
+                            <input type="password" id="cardPin" maxlength="4" pattern="[0-9]{4}" required placeholder="****">
+                        </div>
+                        <div>
+                            <label for="cardCvv">CVV (3 digits)</label>
+                            <input type="password" id="cardCvv" maxlength="3" pattern="[0-9]{3}" required placeholder="***">
+                        </div>
+                    </div>
+                    
+                    <label>
+                        <input type="checkbox" required> 
+                        I agree to the card terms and conditions
+                    </label>
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">Apply for Card</button>
+                        <button type="button" class="btn btn-outline" onclick="closeModal('newCardModal')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Set PIN Modal -->
+    <div id="setPinModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Set Card PIN</h2>
+                <button class="close-btn" onclick="closeModal('setPinModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="setPinForm">
+                    <p>Please enter a new 4-digit PIN for your card.</p>
+                    <input type="password" id="newPin" maxlength="4" pattern="[0-9]{4}" required placeholder="New PIN">
+                    <input type="password" id="confirmPin" maxlength="4" pattern="[0-9]{4}" required placeholder="Confirm PIN">
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">Set PIN</button>
+                        <button type="button" class="btn btn-outline" onclick="closeModal('setPinModal')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/user-bank.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Extended cards data
+        const extendedCards = [
+            {
+                id: 1,
+                type: 'Visa',
+                number: '4532 •••• •••• 7821',
+                fullNumber: '4532123456787821',
+                expiry: '09/28',
+                cvv: '123',
+                pin: '1234',
+                balance: 25000.00,
+                limit: 50000.00,
+                available: 25000.00,
+                status: 'active',
+                color: 'linear-gradient(135deg, #1a1a6e, #4169e1)',
+                account: 'savings',
+                issued: '2023-09-15',
+                spending: [
+                    { month: 'Jan', amount: 1500 },
+                    { month: 'Feb', amount: 2100 },
+                    { month: 'Mar', amount: 1800 },
+                    { month: 'Apr', amount: 2500 },
+                    { month: 'May', amount: 1950 },
+                    { month: 'Jun', amount: 2200 }
+                ]
+            },
+            {
+                id: 2,
+                type: 'Mastercard',
+                number: '5421 •••• •••• 3467',
+                fullNumber: '5421987654323467',
+                expiry: '12/27',
+                cvv: '456',
+                pin: '1234',
+                balance: 35000.00,
+                limit: 75000.00,
+                available: 40000.00,
+                status: 'active',
+                color: 'linear-gradient(135deg, #ff6b6b, #c92a2a)',
+                account: 'investment',
+                issued: '2023-12-01',
+                spending: [
+                    { month: 'Jan', amount: 3200 },
+                    { month: 'Feb', amount: 2800 },
+                    { month: 'Mar', amount: 4100 },
+                    { month: 'Apr', amount: 3500 },
+                    { month: 'May', amount: 3800 },
+                    { month: 'Jun', amount: 4200 }
+                ]
+            },
+            {
+                id: 3,
+                type: 'Apple Card',
+                number: '•••• •••• •••• 9214',
+                fullNumber: '1234567890129214',
+                expiry: '03/29',
+                cvv: '789',
+                pin: '1234',
+                balance: 10850.00,
+                limit: 20000.00,
+                available: 9150.00,
+                status: 'active',
+                color: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
+                account: 'savings',
+                issued: '2024-03-01',
+                spending: [
+                    { month: 'Jan', amount: 850 },
+                    { month: 'Feb', amount: 1200 },
+                    { month: 'Mar', amount: 950 },
+                    { month: 'Apr', amount: 1100 },
+                    { month: 'May', amount: 800 },
+                    { month: 'Jun', amount: 1350 }
+                ]
+            }
+        ];
+
+        let selectedCardType = null;
+        let currentCard = null;
+        let spendingChart = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCards();
+        });
+
+        // Load Cards
+        function loadCards() {
+            const cardsGrid = document.getElementById('cardsGrid');
+            cardsGrid.innerHTML = '';
+            
+            extendedCards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card-item';
+                cardElement.innerHTML = `
+                    <div class="card-visual" style="background: ${card.color}">
+                        <div class="card-chip"></div>
+                        <div class="card-number">${card.number}</div>
+                        <div class="card-details">
+                            <div>
+                                <div class="card-holder-label">Card Holder</div>
+                                <div class="card-holder">Olawale A. Adeshina</div>
+                            </div>
+                            <div>
+                                <div class="card-holder-label">Expires</div>
+                                <div class="card-expiry">${card.expiry}</div>
+                            </div>
+                        </div>
+                        <div class="card-type">${card.type}</div>
+                    </div>
+                    <div class="card-info">
+                        <div>
+                            <h4>${card.type} Card</h4>
+                            <p>Spent: ${formatCurrency(card.balance)} of ${formatCurrency(card.limit)}</p>
+                        </div>
+                        <span class="card-status ${card.status}">${card.status}</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="card-action-btn" onclick="viewCardDetails(${card.id})">
+                            <i class="fas fa-info-circle"></i> Details
+                        </button>
+                        <button class="card-action-btn" onclick="toggleCardFreeze(${card.id})">
+                            <i class="fas fa-${card.status === 'frozen' ? 'lock-open' : 'snowflake'}"></i> 
+                            ${card.status === 'frozen' ? 'Unfreeze' : 'Freeze'}
+                        </button>
+                        <button class="card-action-btn" onclick="openSetPinModal(${card.id})">
+                            <i class="fas fa-key"></i> PIN
+                        </button>
+                        <button class="card-action-btn danger" onclick="cancelCard(${card.id})">
+                            <i class="fas fa-trash"></i> Cancel
+                        </button>
+                    </div>
+                `;
+                cardsGrid.appendChild(cardElement);
+            });
+        }
+
+        // View Card Details
+        function viewCardDetails(cardId) {
+            currentCard = extendedCards.find(c => c.id === cardId);
+            if (currentCard) {
+                const panel = document.getElementById('cardDetailsPanel');
+                const content = document.getElementById('cardDetailsContent');
+                
+                content.innerHTML = `
+                    <div class="detail-row">
+                        <label>Card Number:</label>
+                        <span>${currentCard.fullNumber}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Card Type:</label>
+                        <span>${currentCard.type}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Card Holder:</label>
+                        <span>Olawale Abdul-Ganiyu Adeshina</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Linked Account:</label>
+                        <span>${currentCard.account === 'savings' ? 'Savings Account' : 'Investment Account'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Current Balance:</label>
+                        <span>${formatCurrency(currentCard.balance)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Credit Limit:</label>
+                        <span>${formatCurrency(currentCard.limit)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Available Credit:</label>
+                        <span>${formatCurrency(currentCard.available)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Expiry Date:</label>
+                        <span>${currentCard.expiry}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Issued Date:</label>
+                        <span>${formatDate(currentCard.issued)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <label>Status:</label>
+                        <span class="card-status ${currentCard.status}">${currentCard.status}</span>
+                    </div>
+                `;
+                
+                panel.style.display = 'block';
+                panel.scrollIntoView({ behavior: 'smooth' });
+                
+                // Initialize spending chart
+                initSpendingChart(currentCard.spending);
+            }
+        }
+
+        // Initialize Spending Chart
+        function initSpendingChart(spendingData) {
+            const ctx = document.getElementById('spendingChart').getContext('2d');
+            
+            if (spendingChart) {
+                spendingChart.destroy();
+            }
+            
+            spendingChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: spendingData.map(d => d.month),
+                    datasets: [{
+                        label: 'Spending',
+                        data: spendingData.map(d => d.amount),
+                        backgroundColor: 'rgba(65, 105, 225, 0.6)',
+                        borderColor: '#4169e1',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Toggle Card Freeze
+        function toggleCardFreeze(cardId) {
+            const card = extendedCards.find(c => c.id === cardId);
+            if (card) {
+                const action = card.status === 'active' ? 'freeze' : 'unfreeze';
+                if (confirm(`Are you sure you want to ${action} this ${card.type} card?`)) {
+                    card.status = card.status === 'active' ? 'frozen' : 'active';
+                    loadCards();
+                    if (currentCard && currentCard.id === cardId) {
+                        viewCardDetails(cardId);
+                    }
+                    speakMessage(`Card ${action === 'freeze' ? 'frozen' : 'activated'} successfully`);
+                    alert(`${card.type} card has been ${action}ed`);
+                }
+            }
+        }
+
+        // Open Set PIN Modal
+        function openSetPinModal(cardId) {
+            currentCard = extendedCards.find(c => c.id === cardId);
+            if (currentCard) {
+                document.getElementById('setPinModal').style.display = 'block';
+            }
+        }
+
+        // Set PIN Form Handler
+        document.getElementById('setPinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newPin = document.getElementById('newPin').value;
+            const confirmPin = document.getElementById('confirmPin').value;
+            
+            if (newPin === confirmPin) {
+                if (currentCard) {
+                    currentCard.pin = newPin;
+                    closeModal('setPinModal');
+                    alert('PIN updated successfully!');
+                    speakMessage('PIN updated successfully');
+                }
+            } else {
+                alert('PINs do not match. Please try again.');
+            }
+        });
+
+        // Cancel Card
+        function cancelCard(cardId) {
+            const card = extendedCards.find(c => c.id === cardId);
+            if (card) {
+                if (confirm(`Are you sure you want to permanently cancel this ${card.type} card? This action cannot be undone.`)) {
+                    const index = extendedCards.findIndex(c => c.id === cardId);
+                    if (index > -1) {
+                        extendedCards.splice(index, 1);
+                        loadCards();
+                        document.getElementById('cardDetailsPanel').style.display = 'none';
+                        alert('Card cancelled successfully');
+                        speakMessage('Card cancelled successfully');
+                    }
+                }
+            }
+        }
+
+        // Open New Card Modal
+        function openNewCardModal() {
+            document.getElementById('newCardModal').style.display = 'block';
+        }
+
+        // Select Card Type
+        function selectCardType(element, type) {
+            document.querySelectorAll('.card-type-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedCardType = type;
+        }
+
+        // New Card Form Handler
+        document.getElementById('newCardForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!selectedCardType) {
+                alert('Please select a card type');
+                return;
+            }
+            
+            const newCard = {
+                id: extendedCards.length + 1,
+                type: capitalizeFirst(selectedCardType),
+                number: generateCardNumber(selectedCardType),
+                fullNumber: generateFullCardNumber(selectedCardType),
+                expiry: generateExpiryDate(),
+                cvv: document.getElementById('cardCvv').value,
+                pin: document.getElementById('cardPin').value,
+                balance: 0,
+                limit: parseFloat(document.getElementById('cardLimit').value),
+                available: parseFloat(document.getElementById('cardLimit').value),
+                status: 'active',
+                color: getCardColor(selectedCardType),
+                account: document.getElementById('cardAccount').value,
+                issued: new Date().toISOString().split('T')[0],
+                spending: [
+                    { month: 'Jan', amount: 0 },
+                    { month: 'Feb', amount: 0 },
+                    { month: 'Mar', amount: 0 },
+                    { month: 'Apr', amount: 0 },
+                    { month: 'May', amount: 0 },
+                    { month: 'Jun', amount: 0 }
+                ]
+            };
+            
+            extendedCards.push(newCard);
+            loadCards();
+            closeModal('newCardModal');
+            alert('Card application submitted successfully! Your new card will be issued within 5-7 business days.');
+            speakMessage('New card application submitted successfully');
+        });
+
+        // Helper Functions
+        function generateCardNumber(type) {
+            const prefixes = {
+                visa: '4532',
+                mastercard: '5421',
+                apple: '1234',
+                amex: '3782'
+            };
+            const prefix = prefixes[type] || '4532';
+            const random = Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+            return `${prefix} •••• •••• ${random.substring(4)}`;
+        }
+
+        function generateFullCardNumber(type) {
+            const prefixes = {
+                visa: '4532',
+                mastercard: '5421',
+                apple: '1234',
+                amex: '3782'
+            };
+            const prefix = prefixes[type] || '4532';
+            const random = Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+            return `${prefix}${random}`;
+        }
+
+        function generateExpiryDate() {
+            const date = new Date();
+            const year = date.getFullYear() + Math.floor(Math.random() * 3) + 2;
+            const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+            return `${month}/${year.toString().substring(2)}`;
+        }
+
+        function getCardColor(type) {
+            const colors = {
+                visa: 'linear-gradient(135deg, #1a1a6e, #4169e1)',
+                mastercard: 'linear-gradient(135deg, #ff6b6b, #c92a2a)',
+                apple: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
+                amex: 'linear-gradient(135deg, #006fcf, #00aeff)'
+            };
+            return colors[type] || colors.visa;
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

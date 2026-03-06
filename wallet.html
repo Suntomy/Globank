@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet - Global Pilgrim Bank</title>
+    <link rel="stylesheet" href="bank-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .wallet-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .wallet-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .wallet-card.primary {
+            background: linear-gradient(135deg, #4169e1, #1e3a8a);
+            color: white;
+        }
+        
+        .wallet-card h3 {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+        
+        .wallet-card .balance {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .wallet-card .account-number {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        
+        .wallet-card .change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .wallet-card .change.positive {
+            color: #4ade80;
+        }
+        
+        .wallet-card .change.negative {
+            color: #f87171;
+        }
+        
+        .wallet-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .wallet-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .crypto-card {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        
+        .crypto-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        .crypto-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .crypto-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .crypto-icon.btc {
+            background: linear-gradient(135deg, #f7931a, #c77800);
+        }
+        
+        .crypto-icon.eth {
+            background: linear-gradient(135deg, #627eea, #4c5fd8);
+        }
+        
+        .crypto-icon.usdt {
+            background: linear-gradient(135deg, #26a17b, #1e8a63);
+        }
+        
+        .crypto-symbol {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .crypto-name {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .crypto-balance {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .crypto-value {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .crypto-change {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .crypto-change.positive {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+        
+        .crypto-change.negative {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+        
+        .crypto-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .crypto-actions button {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-primary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+        
+        .crypto-actions button:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quick-action-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .quick-action-btn:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(65, 105, 225, 0.2);
+        }
+        
+        .quick-action-btn i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .quick-action-btn h4 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .accounts-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .accounts-table th,
+        .accounts-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .accounts-table th {
+            background: rgba(65, 105, 225, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .accounts-table tr:hover {
+            background: rgba(65, 105, 225, 0.05);
+        }
+        
+        /* Buy/Sell Crypto Modal */
+        .crypto-modal-content {
+            max-width: 500px;
+        }
+        
+        .crypto-amount-input {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .crypto-amount-input input {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .crypto-amount-input select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .crypto-preview {
+            background: rgba(65, 105, 225, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .crypto-preview-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .crypto-preview-row:last-child {
+            border-bottom: none;
+        }
+        
+        @media (max-width: 768px) {
+            .wallet-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .crypto-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .crypto-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-university"></i>
+            <span>Global Pilgrim Bank</span>
+        </div>
+        <div class="nav-links">
+            <a href="user-dashboard.html">Dashboard</a>
+            <a href="transactions.html">Transactions</a>
+            <a href="cards.html">Cards</a>
+            <a href="wallet.html" class="active">Wallet</a>
+            <a href="kyc.html">KYC</a>
+        </div>
+        <div class="nav-user">
+            <span id="userName">Olawale Abdul-Ganiyu Adeshina</span>
+            <button class="btn btn-outline" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-info">
+                    <h3 id="sidebarUserName">Olawale Abdul-Ganiyu Adeshina</h3>
+                    <p id="sidebarEmail">adeganglobal@gmail.com</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="user-dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="transactions.html"><i class="fas fa-history"></i> Transactions</a></li>
+                <li><a href="cards.html"><i class="fas fa-credit-card"></i> My Cards</a></li>
+                <li><a href="wallet.html" class="active"><i class="fas fa-wallet"></i> Wallet</a></li>
+                <li><a href="kyc.html"><i class="fas fa-user-check"></i> KYC Verification</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <p>Need Help?</p>
+                <a href="#"><i class="fas fa-headset"></i> Contact Support</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <h1 class="page-title">My Wallet</h1>
+
+            <!-- Wallet Overview -->
+            <section class="wallet-overview">
+                <div class="wallet-card primary">
+                    <div>
+                        <h3>Total Balance</h3>
+                        <div class="balance" id="totalBalance">$125,850.00</div>
+                        <div class="account-number">GPB-2024-8837492</div>
+                    </div>
+                    <div class="change positive">
+                        <i class="fas fa-arrow-up"></i> +$12,350.00 this month
+                    </div>
+                </div>
+                
+                <div class="wallet-card">
+                    <div>
+                        <h3>Savings Account</h3>
+                        <div class="balance" id="savingsBalance">$85,000.00</div>
+                        <div class="account-number">GPB-SAV-8837</div>
+                    </div>
+                    <div class="change positive">
+                        <i class="fas fa-arrow-up"></i> +$8,500.00 this month
+                    </div>
+                </div>
+                
+                <div class="wallet-card">
+                    <div>
+                        <h3>Investment Account</h3>
+                        <div class="balance" id="investmentBalance">$40,850.00</div>
+                        <div class="account-number">GPB-INV-8838</div>
+                    </div>
+                    <div class="change positive">
+                        <i class="fas fa-arrow-up"></i> +$3,850.00 this month
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <div class="quick-action-btn" onclick="openDepositModal()">
+                    <i class="fas fa-plus-circle"></i>
+                    <h4>Deposit</h4>
+                </div>
+                <div class="quick-action-btn" onclick="openWithdrawModal()">
+                    <i class="fas fa-minus-circle"></i>
+                    <h4>Withdraw</h4>
+                </div>
+                <div class="quick-action-btn" onclick="openTransferModal()">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h4>Transfer</h4>
+                </div>
+                <div class="quick-action-btn" onclick="openBuyCryptoModal()">
+                    <i class="fab fa-bitcoin"></i>
+                    <h4>Buy Crypto</h4>
+                </div>
+                <div class="quick-action-btn" onclick="openSellCryptoModal()">
+                    <i class="fas fa-coins"></i>
+                    <h4>Sell Crypto</h4>
+                </div>
+                <div class="quick-action-btn" onclick="openExchangeModal()">
+                    <i class="fas fa-sync"></i>
+                    <h4>Exchange</h4>
+                </div>
+            </section>
+
+            <!-- Crypto Wallets -->
+            <section class="wallet-section">
+                <h2>
+                    <span><i class="fab fa-bitcoin"></i> Crypto Wallets</span>
+                    <button class="btn btn-primary" onclick="openBuyCryptoModal()">
+                        <i class="fas fa-plus"></i> Buy Crypto
+                    </button>
+                </h2>
+                
+                <div class="crypto-grid" id="cryptoGrid">
+                    <!-- Crypto cards will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Bank Accounts -->
+            <section class="wallet-section">
+                <h2>
+                    <span><i class="fas fa-university"></i> Bank Accounts</span>
+                    <button class="btn btn-outline">
+                        <i class="fas fa-plus"></i> New Account
+                    </button>
+                </h2>
+                
+                <table class="accounts-table">
+                    <thead>
+                        <tr>
+                            <th>Account Type</th>
+                            <th>Account Number</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accountsTableBody">
+                        <!-- Accounts will be loaded here -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <!-- Buy Crypto Modal -->
+    <div id="buyCryptoModal" class="modal">
+        <div class="modal-content crypto-modal-content">
+            <div class="modal-header">
+                <h2>Buy Crypto</h2>
+                <button class="close-btn" onclick="closeModal('buyCryptoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="buyCryptoForm">
+                    <label>Select Cryptocurrency</label>
+                    <select id="buyCryptoSelect" required>
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="USDT">Tether (USDT)</option>
+                    </select>
+                    
+                    <label>Amount</label>
+                    <div class="crypto-amount-input">
+                        <input type="number" id="buyCryptoAmount" step="0.01" min="10" required placeholder="0.00">
+                        <select id="buyCryptoCurrency">
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="crypto-preview" id="buyCryptoPreview">
+                        <div class="crypto-preview-row">
+                            <label>Price:</label>
+                            <span id="buyCryptoPrice">$0.00</span>
+                        </div>
+                        <div class="crypto-preview-row">
+                            <label>Network Fee:</label>
+                            <span id="buyCryptoFee">$0.00</span>
+                        </div>
+                        <div class="crypto-preview-row">
+                            <label>Total:</label>
+                            <span id="buyCryptoTotal">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <label>Payment Method</label>
+                    <select id="buyCryptoPayment" required>
+                        <option value="savings">Savings Account</option>
+                        <option value="investment">Investment Account</option>
+                        <option value="visa">Visa Card ****7821</option>
+                        <option value="mastercard">Mastercard ****3467</option>
+                    </select>
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">Buy Now</button>
+                        <button type="button" class="btn btn-outline" onclick="closeModal('buyCryptoModal')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sell Crypto Modal -->
+    <div id="sellCryptoModal" class="modal">
+        <div class="modal-content crypto-modal-content">
+            <div class="modal-header">
+                <h2>Sell Crypto</h2>
+                <button class="close-btn" onclick="closeModal('sellCryptoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="sellCryptoForm">
+                    <label>Select Cryptocurrency</label>
+                    <select id="sellCryptoSelect" required>
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ETH">Ethereum (ETH)</option>
+                        <option value="USDT">Tether (USDT)</option>
+                    </select>
+                    
+                    <label>Amount</label>
+                    <div class="crypto-amount-input">
+                        <input type="number" id="sellCryptoAmount" step="0.0001" min="0.0001" required placeholder="0.0000">
+                        <select id="sellCryptoCurrency">
+                            <option value="BTC">BTC</option>
+                            <option value="ETH">ETH</option>
+                            <option value="USDT">USDT</option>
+                        </select>
+                    </div>
+                    
+                    <div class="crypto-preview" id="sellCryptoPreview">
+                        <div class="crypto-preview-row">
+                            <label>Current Price:</label>
+                            <span id="sellCryptoPrice">$0.00</span>
+                        </div>
+                        <div class="crypto-preview-row">
+                            <label>You'll Receive:</label>
+                            <span id="sellCryptoReceive">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <label>Deposit To</label>
+                    <select id="sellCryptoAccount" required>
+                        <option value="savings">Savings Account</option>
+                        <option value="investment">Investment Account</option>
+                    </select>
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">Sell Now</button>
+                        <button type="button" class="btn btn-outline" onclick="closeModal('sellCryptoModal')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Deposit Funds</h2>
+                <button class="close-btn" onclick="closeModal('depositModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="depositForm">
+                    <label>Account</label>
+                    <select id="depositAccount" required>
+                        <option value="savings">Savings Account</option>
+                        <option value="investment">Investment Account</option>
+                    </select>
+                    
+                    <label>Amount</label>
+                    <input type="number" id="depositAmount" step="0.01" min="10" required placeholder="0.00">
+                    
+                    <label>Payment Method</label>
+                    <select id="depositMethod" required>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="card">Card Payment</option>
+                        <option value="crypto">Crypto Deposit</option>
+                    </select>
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">Deposit</button>
+                        <button type="button" class="btn btn-outline" onclick="closeModal('depositModal')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Withdraw Funds</h2>
+                <button class="close-btn" onclick="closeModal('withdrawModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="withdrawForm">
+                    <label>From Account</label>
+                    <select id="withdrawAccount" required>
+                        <option value="savings">Savings Account ($85,000.00)</option>
+                        <option value="investment">Investment Account ($40,850.00)</option>
+                    </select>
+                    
+                    <label>Amount</label>
+                    <input type="number" id="withdrawAmount" step="0.01" min="10" required placeholder="0.00">
+                    
+                    <label>Withdrawal Method</label>
+                    <select id="withdrawMethod" required>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="card">Card Withdrawal</option>
+                        <option value="crypto">Crypto Withdrawal</option>
+                    </select>
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">Withdraw</button>
+                        <button type="button" class="btn btn-outline" onclick="closeModal('withdrawModal')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/user-bank.js"></script>
+    <script>
+        // Crypto Prices
+        const cryptoPrices = {
+            BTC: { price: 86000.00, change: '+2.34%' },
+            ETH: { price: 2570.00, change: '+1.87%' },
+            USDT: { price: 1.00, change: '+0.02%' }
+        };
+
+        // User Crypto Holdings
+        const cryptoHoldings = {
+            BTC: { balance: 0.0523, value: 4497.80 },
+            ETH: { balance: 1.2450, value: 3199.65 },
+            USDT: { balance: 8200.00, value: 8200.00 }
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCryptoWallets();
+            loadAccounts();
+            initCryptoModals();
+            initTransactionForms();
+        });
+
+        // Load Crypto Wallets
+        function loadCryptoWallets() {
+            const grid = document.getElementById('cryptoGrid');
+            grid.innerHTML = '';
+            
+            Object.entries(cryptoHoldings).forEach(([symbol, holding]) => {
+                const price = cryptoPrices[symbol];
+                const card = document.createElement('div');
+                card.className = 'crypto-card';
+                card.innerHTML = `
+                    <div class="crypto-header">
+                        <div class="crypto-icon ${symbol.toLowerCase()}">
+                            <i class="fab fa-${symbol.toLowerCase() === 'btc' ? 'bitcoin' : symbol.toLowerCase() === 'eth' ? 'ethereum' : 'usd'}"></i>
+                        </div>
+                        <span class="crypto-symbol">${symbol}</span>
+                    </div>
+                    <div class="crypto-name">${symbol === 'BTC' ? 'Bitcoin' : symbol === 'ETH' ? 'Ethereum' : 'Tether'}</div>
+                    <div class="crypto-balance">${holding.balance.toFixed(4)} ${symbol}</div>
+                    <div class="crypto-value">${formatCurrency(holding.value)}</div>
+                    <span class="crypto-change ${price.change.includes('+') ? 'positive' : 'negative'}">
+                        <i class="fas fa-${price.change.includes('+') ? 'caret-up' : 'caret-down'}"></i> ${price.change}
+                    </span>
+                    <div class="crypto-actions">
+                        <button onclick="openBuyCryptoModal('${symbol}')">
+                            <i class="fas fa-plus"></i> Buy
+                        </button>
+                        <button onclick="openSellCryptoModal('${symbol}')">
+                            <i class="fas fa-minus"></i> Sell
+                        </button>
+                        <button onclick="sendCrypto('${symbol}')">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Load Accounts
+        function loadAccounts() {
+            const tbody = document.getElementById('accountsTableBody');
+            tbody.innerHTML = '';
+            
+            const accounts = [
+                { type: 'Savings Account', number: 'GPB-SAV-8837', balance: 85000.00, status: 'active' },
+                { type: 'Investment Account', number: 'GPB-INV-8838', balance: 40850.00, status: 'active' }
+            ];
+            
+            accounts.forEach(account => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${account.type}</td>
+                    <td>${account.number}</td>
+                    <td>${formatCurrency(account.balance)}</td>
+                    <td><span class="status-badge ${account.status}">${account.status}</span></td>
+                    <td>
+                        <button class="action-btn" onclick="viewAccount('${account.number}')"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn" onclick="transferFrom('${account.number}')"><i class="fas fa-exchange-alt"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Initialize Crypto Modals
+        function initCryptoModals() {
+            // Buy Crypto
+            document.getElementById('buyCryptoSelect').addEventListener('change', updateBuyPreview);
+            document.getElementById('buyCryptoAmount').addEventListener('input', updateBuyPreview);
+            
+            // Sell Crypto
+            document.getElementById('sellCryptoSelect').addEventListener('change', updateSellPreview);
+            document.getElementById('sellCryptoAmount').addEventListener('input', updateSellPreview);
+        }
+
+        // Update Buy Preview
+        function updateBuyPreview() {
+            const symbol = document.getElementById('buyCryptoSelect').value;
+            const amount = parseFloat(document.getElementById('buyCryptoAmount').value) || 0;
+            const price = cryptoPrices[symbol].price;
+            const fee = amount * 0.01; // 1% fee
+            const total = amount + fee;
+            
+            document.getElementById('buyCryptoPrice').textContent = formatCurrency(price);
+            document.getElementById('buyCryptoFee').textContent = formatCurrency(fee);
+            document.getElementById('buyCryptoTotal').textContent = formatCurrency(total);
+        }
+
+        // Update Sell Preview
+        function updateSellPreview() {
+            const symbol = document.getElementById('sellCryptoSelect').value;
+            const amount = parseFloat(document.getElementById('sellCryptoAmount').value) || 0;
+            const price = cryptoPrices[symbol].price;
+            const receive = amount * price;
+            
+            document.getElementById('sellCryptoPrice').textContent = formatCurrency(price);
+            document.getElementById('sellCryptoReceive').textContent = formatCurrency(receive);
+        }
+
+        // Initialize Transaction Forms
+        function initTransactionForms() {
+            // Buy Crypto Form
+            document.getElementById('buyCryptoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const symbol = document.getElementById('buyCryptoSelect').value;
+                const amount = parseFloat(document.getElementById('buyCryptoAmount').value);
+                const payment = document.getElementById('buyCryptoPayment').value;
+                
+                if (amount > 0) {
+                    const price = cryptoPrices[symbol].price;
+                    const cryptoAmount = amount / price;
+                    
+                    cryptoHoldings[symbol].balance += cryptoAmount;
+                    cryptoHoldings[symbol].value += amount;
+                    
+                    loadCryptoWallets();
+                    closeModal('buyCryptoModal');
+                    
+                    alert(`Successfully purchased ${cryptoAmount.toFixed(6)} ${symbol}`);
+                    speakMessage(`Successfully purchased ${cryptoAmount.toFixed(6)} ${symbol}`);
+                }
+            });
+            
+            // Sell Crypto Form
+            document.getElementById('sellCryptoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const symbol = document.getElementById('sellCryptoSelect').value;
+                const amount = parseFloat(document.getElementById('sellCryptoAmount').value);
+                const account = document.getElementById('sellCryptoAccount').value;
+                
+                if (amount > 0 && amount <= cryptoHoldings[symbol].balance) {
+                    const price = cryptoPrices[symbol].price;
+                    const receive = amount * price;
+                    
+                    cryptoHoldings[symbol].balance -= amount;
+                    cryptoHoldings[symbol].value -= receive;
+                    
+                    // Update account balance
+                    if (account === 'savings') {
+                        userData.savingsBalance += receive;
+                    } else {
+                        userData.investmentBalance += receive;
+                    }
+                    userData.totalBalance += receive;
+                    updateBalances();
+                    
+                    loadCryptoWallets();
+                    closeModal('sellCryptoModal');
+                    
+                    alert(`Successfully sold ${amount} ${symbol} for ${formatCurrency(receive)}`);
+                    speakMessage(`Successfully sold ${amount} ${symbol} for ${formatCurrency(receive)}`);
+                } else {
+                    alert('Insufficient crypto balance');
+                }
+            });
+            
+            // Deposit Form
+            document.getElementById('depositForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const account = document.getElementById('depositAccount').value;
+                const amount = parseFloat(document.getElementById('depositAmount').value);
+                const method = document.getElementById('depositMethod').value;
+                
+                if (amount > 0) {
+                    if (account === 'savings') {
+                        userData.savingsBalance += amount;
+                    } else {
+                        userData.investmentBalance += amount;
+                    }
+                    userData.totalBalance += amount;
+                    updateBalances();
+                    loadAccounts();
+                    closeModal('depositModal');
+                    
+                    alert(`Successfully deposited ${formatCurrency(amount)}`);
+                    speakMessage(`Deposit successful. ${formatCurrency(amount)} added to your account.`);
+                }
+            });
+            
+            // Withdraw Form
+            document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const account = document.getElementById('withdrawAccount').value;
+                const amount = parseFloat(document.getElementById('withdrawAmount').value);
+                const method = document.getElementById('withdrawMethod').value;
+                
+                const accountBalance = account === 'savings' ? userData.savingsBalance : userData.investmentBalance;
+                
+                if (amount > 0 && amount <= accountBalance) {
+                    if (account === 'savings') {
+                        userData.savingsBalance -= amount;
+                    } else {
+                        userData.investmentBalance -= amount;
+                    }
+                    userData.totalBalance -= amount;
+                    updateBalances();
+                    loadAccounts();
+                    closeModal('withdrawModal');
+                    
+                    alert(`Successfully withdrawn ${formatCurrency(amount)}`);
+                    speakMessage(`Withdrawal successful. ${formatCurrency(amount)} debited from your account.`);
+                } else {
+                    alert('Insufficient balance');
+                }
+            });
+        }
+
+        // Helper Functions
+        function openBuyCryptoModal(symbol = 'BTC') {
+            document.getElementById('buyCryptoSelect').value = symbol;
+            document.getElementById('buyCryptoModal').style.display = 'block';
+            updateBuyPreview();
+        }
+
+        function openSellCryptoModal(symbol = 'BTC') {
+            document.getElementById('sellCryptoSelect').value = symbol;
+            document.getElementById('sellCryptoModal').style.display = 'block';
+            updateSellPreview();
+        }
+
+        function openDepositModal() {
+            document.getElementById('depositModal').style.display = 'block';
+        }
+
+        function openWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'block';
+        }
+
+        function openTransferModal() {
+            alert('Transfer feature coming soon!');
+        }
+
+        function openExchangeModal() {
+            alert('Exchange feature coming soon!');
+        }
+
+        function sendCrypto(symbol) {
+            alert(`Send ${symbol} feature coming soon!`);
+        }
+
+        function viewAccount(number) {
+            alert(`View account ${number} details`);
+        }
+
+        function transferFrom(number) {
+            alert(`Transfer from account ${number}`);
+        }
+
+        function updateBalances() {
+            document.getElementById('totalBalance').textContent = formatCurrency(userData.totalBalance);
+            document.getElementById('savingsBalance').textContent = formatCurrency(userData.savingsBalance);
+            document.getElementById('investmentBalance').textContent = formatCurrency(userData.investmentBalance);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Close modals on outside click
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
